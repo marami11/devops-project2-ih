@@ -80,4 +80,3 @@ export const getOrdersBySession = async (sessionId: string): Promise<Order[]> =>
 };
 
 export default apiClient;
-

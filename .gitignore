@@ -1,29 +1,44 @@
-# Environment files
+# ===== Environment / Secrets =====
 .env
 .env.local
 .env.*.local
 
-# IDE
+# ===== IDE / Editors =====
 .vscode/
 .idea/
 *.iml
 
-# OS
+# ===== OS / System =====
 .DS_Store
 Thumbs.db
 
-# Logs
+# ===== Logs =====
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Temporary files
+# ===== Temporary files =====
 *.tmp
 *.temp
 
-**/**/.terraform/
-**/**/.terraform.lock.hcl
-**/**/*.tfstate
-**/**/target/
+# ===== Frontend (React / Node) =====
+node_modules/
+build/
+dist/
 
+# ===== Backend (Java / Maven) =====
+/target/
+/.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# ===== Docker =====
+*.tar
+docker-compose.override.yml
+
+# ===== Terraform =====
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
