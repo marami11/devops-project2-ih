@@ -1,0 +1,38 @@
+name: Terraform Apply
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'infra/**'
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        working-directory: ./infra/terraform
+        run: terraform init -input=false
+
+      - name: Terraform Plan
+        working-directory: ./infra/terraform
+        run: terraform plan -out=tfplan -input=false
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        working-directory: ./infra/terraform
+        run: terraform apply -auto-approve tfplan
