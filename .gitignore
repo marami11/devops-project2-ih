@@ -42,3 +42,4 @@ docker-compose.override.yml
 *.tfstate.backup
 *.tfvars
 .terraform.lock.hcl
+terraform.tfvars

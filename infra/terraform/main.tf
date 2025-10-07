@@ -56,9 +56,9 @@ module "sql" {
   location           = local.location
   vnet_id            = module.vnet.virtual_network.id
   subnet_id          = module.subnets["database_subnet"].subnet.id
-  sql_admin_user     = "sqladminuser"
-  sql_admin_password = "P@ssword123!"
-  sql_db_name        = "projectdb"
+  sql_admin_user     = var.sql_admin_user
+  sql_admin_password = var.sql_admin_password
+  sql_db_name        = var.sql_db_name
   sql_sku            = "S0"
   tags               = local.tags
 
@@ -95,7 +95,7 @@ module "webapp" {
   # Frontend
   service_plan_name_fe = "plan-web1"
   fe_app_name          = "project-web1-maram"
-  fe_image_name        = "marami11/frontend-app"
+  fe_image_name      = var.fe_image_name
   fe_tag               = "latest"
   fe_sku               = "P1v2"
   public_access        = true
@@ -103,7 +103,7 @@ module "webapp" {
   # Backend
   service_plan_name_be = "plan-web2"
   be_app_name          = "project2-web2-maram"
-  be_image_name        = "marami11/backend-app"
+  be_image_name      = var.be_image_name
   be_tag               = "latest"
   be_sku               = "P1v2"
 
