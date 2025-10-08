@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  BE_IMAGE: "${{ secrets.DOCKERHUB_USERNAME }}/project2-be"
+  BE_IMAGE: "${{ secrets.DOCKERHUB_USERNAME }}/backend-app"
 
 jobs:
   build_backend:

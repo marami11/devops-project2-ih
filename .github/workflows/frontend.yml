@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  FE_IMAGE: "${{ secrets.DOCKERHUB_USERNAME }}/project2-fe"
+  FE_IMAGE: "${{ secrets.DOCKERHUB_USERNAME }}/frontend-app"
 
 jobs:
   build_frontend:
@@ -34,7 +34,7 @@ jobs:
       - name:  Set Backend URL
         id: backend_url
         run: |
-          BACKEND_URL="http://project2-web2-maram.azurewebsites.net"
+          BACKEND_URL="http://74.249.242.160"
           echo "backend_url=$BACKEND_URL" >> $GITHUB_OUTPUT
 
       - name:  Build & Push Frontend (Vite)
