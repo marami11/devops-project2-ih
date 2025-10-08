@@ -1,55 +1,64 @@
-name: Terraform Infra Pipeline
+name: Deploy Terraform Infra
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    env:
-      ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
-      ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
-      ARM_TENANT_ID: ${{ secrets.TENANTID }}
-      SQL_ADMIN_USER: ${{ secrets.SQL_ADMIN_USER }}
-      SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}
-      SQL_DB_NAME: ${{ secrets.SQL_DB_NAME }}
-
     steps:
+      # 1️⃣ Checkout Repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.7
 
-      - name: Terraform Init
+      # 3️⃣ Terraform Format
+      - name: Terraform Format Check
         working-directory: infra/terraform
-        run: terraform init
+        run: terraform fmt -check
 
-      - name: Terraform Format
-        working-directory: infra/terraform
-        run: terraform fmt -recursive
-
+      # 4️⃣ Terraform Validate
       - name: Terraform Validate
         working-directory: infra/terraform
         run: terraform validate
 
+      # 5️⃣ Terraform Init
+      - name: Terraform Init
+        working-directory: infra/terraform
+        run: terraform init
+
+      # 6️⃣ Terraform Plan
       - name: Terraform Plan
         working-directory: infra/terraform
-        run: |
-          terraform plan \
-            -var="sql_admin_user=${{ env.SQL_ADMIN_USER }}" \
-            -var="sql_admin_password=${{ env.SQL_ADMIN_PASSWORD }}" \
-            -var="sql_db_name=${{ env.SQL_DB_NAME }}" \
-            -out=tfplan
+        env:
+          SQL_ADMIN_USER: ${{ secrets.SQL_ADMIN_USER }}
+          SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}
+          SQL_DB_NAME: ${{ secrets.SQL_DB_NAME }}
+          ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
+          ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+          ARM_TENANT_ID: ${{ secrets.TENANTID }}
+        run: terraform plan \
+          -var="sql_admin_user=${{ env.SQL_ADMIN_USER }}" \
+          -var="sql_admin_password=${{ env.SQL_ADMIN_PASSWORD }}" \
+          -var="sql_db_name=${{ env.SQL_DB_NAME }}" \
+          -out=tfplan
 
+      # 7️⃣ Terraform Apply
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
         working-directory: infra/terraform
+        env:
+          SQL_ADMIN_USER: ${{ secrets.SQL_ADMIN_USER }}
+          SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}
+          SQL_DB_NAME: ${{ secrets.SQL_DB_NAME }}
+          ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
+          ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+          ARM_TENANT_ID: ${{ secrets.TENANTID }}
         run: terraform apply -auto-approve tfplan
