@@ -6,6 +6,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -16,17 +17,29 @@ jobs:
           terraform_version: 1.5.7
 
       - name: Terraform Init
-        run: terraform init
         working-directory: infra/terraform
+        run: terraform init
 
-      - name: Terraform Apply
+      - name: Terraform Plan
+        working-directory: infra/terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
           ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
           ARM_TENANT_ID: ${{ secrets.TENANTID }}
-          SQL_ADMIN_USER: ${{ secrets.SQL_ADMIN_USER }}
-          SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}
-          SQL_DB_NAME: ${{ secrets.SQL_DB_NAME }}
-        run: terraform apply -auto-approve
+        run: |
+          terraform plan \
+            -var="sql_admin_user=${{ secrets.SQL_ADMIN_USER }}" \
+            -var="sql_admin_password=${{ secrets.SQL_ADMIN_PASSWORD }}" \
+            -var="sql_db_name=${{ secrets.SQL_DB_NAME }}" \
+            -out=tfplan
+
+      - name: Terraform Apply
+        if: success()
         working-directory: infra/terraform
+        env:
+          ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
+          ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+          ARM_TENANT_ID: ${{ secrets.TENANTID }}
+        run: terraform apply -auto-approve tfplan
