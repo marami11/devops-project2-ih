@@ -112,3 +112,13 @@ module "webapp" {
   frontend_subnet_id = module.subnets["frontend_subnet"].subnet.id
   backend_subnet_id  = module.subnets["backend_subnet"].subnet.id
 }
+module "app_gateway" {
+  source              = "../Azure/azurerm_app_gateway"
+  resource_group_name = module.resource_group.resource_group.name
+  location            = local.location
+  subnet_id           = module.subnets["gateway_subnet"].subnet.id
+  backend_ip_addresses = [
+    # IPs of your backend web apps if static, أو NIC IDs
+  ]
+  tags = local.common_tags
+}
