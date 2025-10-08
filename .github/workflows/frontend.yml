@@ -34,7 +34,7 @@ jobs:
       - name:  Set Backend URL
         id: backend_url
         run: |
-          BACKEND_URL="http://4.210.178.108"
+          BACKEND_URL="http://project2-web2-maram.azurewebsites.net"
           echo "backend_url=$BACKEND_URL" >> $GITHUB_OUTPUT
 
       - name:  Build & Push Frontend (Vite)
