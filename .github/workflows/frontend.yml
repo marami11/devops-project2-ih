@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  FE_IMAGE: "${{ secrets.DOCKERHUB_USERNAME }}/frontend-app"
+  FE_IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/frontend-app"
 
 jobs:
   build_frontend:
@@ -40,7 +40,7 @@ jobs:
       - name:  Build & Push Frontend (Vite)
         run: |
           docker build -t ${{ env.FE_IMAGE_NAME }}:latest \
-            ./frontend
+          ./frontend
 
           docker push ${{ env.FE_IMAGE_NAME }}:${{ steps.version.outputs.frontend }}
           docker push ${{ env.FE_IMAGE_NAME }}:latest
