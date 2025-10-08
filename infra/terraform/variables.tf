@@ -17,9 +17,11 @@ variable "sql_db_name" {
 variable "be_image_name" {
   type        = string
   description = "Backend Docker image name"
+  default = "marami11/backend-app"
 }
 
 variable "fe_image_name" {
   type        = string
   description = "Frontend Docker image name"
+  default = "marami11/frontend-app"
 }
