@@ -1,17 +1,20 @@
 variable "sql_admin_user" {
   type        = string
   description = "SQL admin username"
+  default = "sqladminuser"
 }
 
 variable "sql_admin_password" {
   type        = string
   description = "SQL admin password"
   sensitive   = true
+  default = "P@ssword123!"
 }
 
 variable "sql_db_name" {
   type        = string
   description = "SQL database name"
+  default = "projectdb"
 }
 
 variable "be_image_name" {
