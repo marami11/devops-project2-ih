@@ -7,6 +7,10 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: infra/terraform   # <<< هذا أهم شي!
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -17,11 +21,9 @@ jobs:
           terraform_version: 1.5.7
 
       - name: Terraform Init
-        working-directory: infra/terraform
         run: terraform init
 
       - name: Terraform Plan
-        working-directory: infra/terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
           ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
@@ -36,7 +38,6 @@ jobs:
 
       - name: Terraform Apply
         if: success()
-        working-directory: infra/terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
           ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
