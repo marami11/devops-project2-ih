@@ -1,44 +1,29 @@
-variable "resource_group_name" {
-  description = "Resource Group name"
+variable "prefix" {
   type        = string
+  description = "Prefix for resource names"
 }
 
 variable "location" {
-  description = "Azure location"
   type        = string
+  description = "Azure location"
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "Resource group name"
 }
 
 variable "subnet_id" {
+  type        = string
   description = "Subnet ID for the App Gateway"
+}
+
+variable "frontend_fqdn" {
   type        = string
+  description = "Frontend Web App FQDN"
 }
 
-variable "frontend_ip_name" {
-  description = "Frontend IP configuration name"
+variable "backend_fqdn" {
   type        = string
-  default     = "appgw-frontend-ip"
-}
-
-variable "gateway_name" {
-  description = "App Gateway name"
-  type        = string
-  default     = "app-gateway"
-}
-
-variable "backend_pool_name" {
-  description = "Backend pool name"
-  type        = string
-  default     = "appgw-backend-pool"
-}
-
-variable "backend_ip_addresses" {
-  description = "Backend IP addresses or NIC IDs"
-  type        = list(string)
-  default     = []
-}
-
-variable "tags" {
-  description = "Tags for the resource"
-  type        = map(string)
-  default     = {}
+  description = "Backend Web App FQDN"
 }

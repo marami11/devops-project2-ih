@@ -20,7 +20,7 @@ variable "vnet_id" {
 }
 
 variable "subnet_id" {
-  description = "ID of the subnet for the private endpoint"
+  description = "ID of the subnet for the backend"
   type        = string
 }
 

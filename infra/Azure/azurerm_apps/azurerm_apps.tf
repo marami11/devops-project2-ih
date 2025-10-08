@@ -134,6 +134,7 @@ resource "azurerm_linux_web_app" "backend_app" {
     "DB_USERNAME"            = "sqladminuser"
     "DB_PASSWORD"            = "P@ssword123!"
     "DB_DRIVER"              = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+    "CORS_ALLOWED_ORIGINS"   = "http://localhost:3000,http://localhost:5173" 
   }
 
 }
