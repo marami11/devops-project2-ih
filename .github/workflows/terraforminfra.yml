@@ -1,64 +1,35 @@
-name: Deploy Terraform Infra
+name: "Terraform Deploy Only "
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  terraform:
+  terraform_deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: TFmain
 
+    env:
+      TF_VAR_sql_admin_password: ${{ secrets.SQL_ADMIN_PASSWORD }}
+    
     steps:
-      # 1️⃣ Checkout Repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      # 2️⃣ Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Azure Login (Service Principal)
+        uses: azure/login@v2
         with:
-          terraform_version: 1.5.7
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # 3️⃣ Terraform Format
-      - name: Terraform Format Check
-        working-directory: infra/terraform
-        run: terraform fmt -check
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-      # 4️⃣ Terraform Validate
-      - name: Terraform Validate
-        working-directory: infra/terraform
-        run: terraform validate
-
-      # 5️⃣ Terraform Init
       - name: Terraform Init
-        working-directory: infra/terraform
         run: terraform init
 
-      # 6️⃣ Terraform Plan
-      - name: Terraform Plan
-        working-directory: infra/terraform
-        env:
-          SQL_ADMIN_USER: ${{ secrets.SQL_ADMIN_USER }}
-          SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}
-          SQL_DB_NAME: ${{ secrets.SQL_DB_NAME }}
-          ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
-          ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
-          ARM_TENANT_ID: ${{ secrets.TENANTID }}
-        run: terraform plan \
-          -var="sql_admin_user=${{ env.SQL_ADMIN_USER }}" \
-          -var="sql_admin_password=${{ env.SQL_ADMIN_PASSWORD }}" \
-          -var="sql_db_name=${{ env.SQL_DB_NAME }}" \
-          -out=tfplan
-
-      # 7️⃣ Terraform Apply
       - name: Terraform Apply
-        working-directory: infra/terraform
-        env:
-          SQL_ADMIN_USER: ${{ secrets.SQL_ADMIN_USER }}
-          SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}
-          SQL_DB_NAME: ${{ secrets.SQL_DB_NAME }}
-          ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
-          ARM_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
-          ARM_TENANT_ID: ${{ secrets.TENANTID }}
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve -lock=false
