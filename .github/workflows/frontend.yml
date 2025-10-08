@@ -37,10 +37,11 @@ jobs:
           BACKEND_URL="http://74.249.242.160"
           echo "backend_url=$BACKEND_URL" >> $GITHUB_OUTPUT
 
-      - name:  Build & Push Frontend (Vite)
+      - name: Build & Push Frontend (Vite)
         run: |
-          docker build -t ${{ env.FE_IMAGE_NAME }}:latest \
+          docker build --platform linux/amd64 \
+          --build-arg VITE_API_BASE_URL=${{ steps.backend_url.outputs.backend_url }} \
+          -t ${{ env.FE_IMAGE_NAME }}:latest \
           ./frontend
 
-          docker push ${{ env.FE_IMAGE_NAME }}:${{ steps.version.outputs.frontend }}
-          docker push ${{ env.FE_IMAGE_NAME }}:latest
+           docker push ${{ env.FE_IMAGE_NAME }}:latest
